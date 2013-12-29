@@ -9,7 +9,7 @@ public class Block {
     private Color fillColor;
     private double x;
     private double y;
-    
+
     public Block(Color fillColor, double x, double y) {
         this.fillColor = fillColor;
         this.x = x;
@@ -35,7 +35,7 @@ public class Block {
     public void paintBlock(Graphics2D g) {
         Rectangle2D rect = new Rectangle2D.Double(x, y, 20, 20);
         BasicStroke stroke = new BasicStroke(2.0f, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER);
-        
+
         g.setPaint(fillColor);
         g.fill(rect);
         g.setPaint(Color.BLACK);
