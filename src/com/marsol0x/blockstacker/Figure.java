@@ -18,8 +18,10 @@ public class Figure {
     private int posX = 0;
     private int posY = 0;
     private Board board;
-    
-    public Figure(int fig, Board b) {
+
+    public Figure(int fig, Board b, int x, int y) {
+        posX = x;
+        posY = y;
         board = b;
         switch (fig) {
         case S_FIGURE:
@@ -143,6 +145,84 @@ public class Figure {
     public Color getColor() {
         return color;
     }
+
+    private boolean belongsToFigure(int x, int y) {
+        int oldX, oldY;
+        for (int sqr = 0; sqr < 4; sqr++) {
+            oldX = posX + relativeX(rotation, sqr);
+            oldY = posY + relativeY(rotation, sqr);
+            if (oldX == x && oldY == y) return true;
+        }
+        return false;
+    }
+
+    private boolean canMove(int x, int y) {
+        if (board.isEmpty(x, y) || belongsToFigure(x, y)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public boolean canMove() {
+        int x, y;
+        for (int sqr = 0; sqr < 4; sqr++) {
+            x = posX + relativeX(rotation, sqr);
+            y = posY + relativeY(rotation, sqr);
+            if (!canMove(x, y)) return false;
+        }
+
+        return true;
+    }
+
+    public boolean moveSide(int dir) {
+        int newPosX = posX;
+        if (dir == 0) {
+            newPosX--;
+        } else if (dir == 1) {
+            newPosX++;
+        } else {
+            return false;
+        }
+
+        int x, y;
+        for (int sqr = 0; sqr < 4; sqr++) {
+            x = newPosX + relativeX(rotation, sqr);
+            y = posY + relativeY(rotation, sqr);
+            if (!canMove(x, y)) {
+                // If I can't move, is the because of a wall or because I've hit another block?
+                if (x < board.getWidth() && x >= 0) return true;
+                // Stop here
+                return true;
+            }
+        }
+
+        paint(null);
+        posX = newPosX;
+        paint(color);
+
+        return true;
+    }
+
+    public boolean moveDown() {
+        int newPosY = posY + 1;
+        int x, y;
+
+        for (int sqr = 0; sqr < 4; sqr++) {
+            x = posX + relativeX(rotation, sqr);
+            y = newPosY + relativeY(rotation, sqr);
+            if (!canMove(x, y)) {
+                return false;
+            }
+        }
+
+        paint(null);
+        posY = newPosY;
+        paint(color);
+
+        return true;
+    }
+
     private int relativeX(int rot, int sqr) {
         switch (rot % 4) {
         case 0:
@@ -177,6 +257,13 @@ public class Figure {
             newRotation = 0;
         }
 
+        int x, y;
+        for (int i = 0; i < 4; i++) {
+            x = posX + relativeX(newRotation, i);
+            y = posY + relativeY(newRotation, i);
+            if (!canMove(x, y)) return;
+        }
+
         paint(null);
         rotation = newRotation;
         paint(color);
@@ -196,6 +283,10 @@ public class Figure {
 
     public void setPosY(int posY) {
         this.posY = posY;
+    }
+
+    public void paint() {
+        paint(color);
     }
 
     private void paint(Color c) {

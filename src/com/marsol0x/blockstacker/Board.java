@@ -7,15 +7,26 @@ public class Board extends Object {
     private int width;
     private int height;
     private Block[][] grid;
-    
+
     public Board(int width, int height) {
         this.width = width;
         this.height = height;
         grid = new Block[width][height];
     }
-    
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
     public boolean isEmpty(int x, int y) {
-        if ((x < 0 && x > width) && (y < 0 && y > height)) {
+        if (!(x >= 0 && x < width)) {
+            return false;
+        }
+        if (!(y >= 0 && y < height)) {
             return false;
         }
 
@@ -25,9 +36,13 @@ public class Board extends Object {
             return false;
         }
     }
-    
+
     public void setColor(Color c, int x, int y) {
-        grid[x][y] = new Block(c, x * 20, y * 20);
+        if (c == null) {
+            grid[x][y] = null;
+        } else {
+            grid[x][y] = new Block(c, x * 20, y * 20);
+        }
     }
 
     public void render(Graphics2D g2) {
