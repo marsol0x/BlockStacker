@@ -30,6 +30,7 @@ class Game extends JPanel implements KeyListener, ActionListener {
         setPreferredSize(new Dimension(width * 20, height * 20));
         setOpaque(true);
         setBackground(Color.BLACK);
+        setDoubleBuffered(true);
 
         board = new Board(width, height);
         newFigure();
@@ -88,6 +89,7 @@ class Game extends JPanel implements KeyListener, ActionListener {
         repaint();
 
         if (!stillMoving) {
+            board.clearFullRows();
             newFigure();
         }
     }
@@ -99,7 +101,10 @@ class Game extends JPanel implements KeyListener, ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (!figure.moveDown()) newFigure();
+        if (!figure.moveDown()) {
+            board.clearFullRows();
+            newFigure();
+        }
         repaint();
     }
 }
