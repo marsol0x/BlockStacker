@@ -11,7 +11,7 @@ public class Board extends Object {
     public Board(int width, int height) {
         this.width = width;
         this.height = height;
-        grid = new Block[width][height];
+        grid = new Block[height][width];
     }
 
     public int getWidth() {
@@ -23,14 +23,14 @@ public class Board extends Object {
     }
 
     public boolean isEmpty(int x, int y) {
-        if (!(x >= 0 && x < width)) {
+        if (!(x >= 0 && x < getWidth())) {
             return false;
         }
-        if (!(y >= 0 && y < height)) {
+        if (!(y >= 0 && y < getHeight())) {
             return false;
         }
 
-        if (grid[x][y] == null) {
+        if (grid[y][x] == null) {
             return true;
         } else {
             return false;
@@ -39,16 +39,16 @@ public class Board extends Object {
 
     public void setColor(Color c, int x, int y) {
         if (c == null) {
-            grid[x][y] = null;
+            grid[y][x] = null;
         } else {
-            grid[x][y] = new Block(c, x * 20, y * 20);
+            grid[y][x] = new Block(c, x * 20, y * 20);
         }
     }
 
     private boolean isRowFull(int row) {
         boolean rowFull = true;
-        for (int i = 0; i < width; i++) {
-            if (grid[i][row] == null) {
+        for (int i = 0; i < getWidth(); i++) {
+            if (grid[row][i] == null) {
                 rowFull = false;
                 break;
             }
@@ -74,7 +74,7 @@ public class Board extends Object {
     }
 
     public void clearFullRows() {
-        for (int row = height - 1; row >= 0; row--) {
+        for (int row = getHeight() - 1; row >= 0; row--) {
             if (isRowFull(row)) {
                 clearRow(row);
                 collapseRow(row);
@@ -83,10 +83,10 @@ public class Board extends Object {
     }
 
     public void render(Graphics2D g2) {
-        for (int x = 0; x < width; x++) {
-            for (int y = 0; y < height; y++) {
-                if (grid[x][y] != null) {
-                    grid[x][y].paintBlock(g2);
+        for (int y = 0; y < getHeight(); y++) {
+            for (int x = 0; x < getWidth(); x++) {
+                if (grid[y][x] != null) {
+                    grid[y][x].paintBlock(g2);
                 }
             }
         }
