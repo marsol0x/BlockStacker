@@ -18,6 +18,7 @@ import javax.swing.Timer;
 class Game extends JPanel implements KeyListener, ActionListener {
     private Board board;
     private Figure figure;
+    private final FigureType[] availFigures = FigureType.values();
     private Timer timer;
     private Random rand = new Random();
 
@@ -52,7 +53,7 @@ class Game extends JPanel implements KeyListener, ActionListener {
         if (newFig == 0 || newFig == 1) posY++;
 
         figure = null;
-        figure = new Figure(newFig, board, 4, posY);
+        figure = new Figure(availFigures[newFig], board, 4, posY);
         if (!figure.canMove()) {
             triggerGameOver();
         }

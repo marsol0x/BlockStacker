@@ -3,147 +3,22 @@ package com.marsol0x.blockstacker;
 import java.awt.Color;
 
 public class Figure {
-    public static final int S_FIGURE = 0;
-    public static final int Z_FIGURE = 1;
-    public static final int I_FIGURE = 2;
-    public static final int O_FIGURE = 3;
-    public static final int L_FIGURE = 4;
-    public static final int J_FIGURE = 5;
-    public static final int T_FIGURE = 6;
-
-    private int figureGrid[][] = new int[4][2];
+    private final FigureType figureType;
     private int rotation = 0;
-    private int maxRotation = 0;
-    private Color color;
     private int posX = 0;
     private int posY = 0;
     private Board board;
 
-    public Figure(int fig, Board b, int x, int y) {
+    public Figure(FigureType fig, Board b, int x, int y) {
         posX = x;
         posY = y;
         board = b;
-        switch (fig) {
-        case S_FIGURE:
-            figureGrid[0][0] = -1;
-            figureGrid[0][1] = 0;
-
-            figureGrid[1][0] = 0;
-            figureGrid[1][1] = 0;
-
-            figureGrid[2][0] = 0;
-            figureGrid[2][1] = -1;
-
-            figureGrid[3][0] = 1;
-            figureGrid[3][1] = -1;
-
-            color = Color.MAGENTA;
-            maxRotation = 1;
-            break;
-        case Z_FIGURE:
-            figureGrid[0][0] = -1;
-            figureGrid[0][1] = -1;
-
-            figureGrid[1][0] = 0;
-            figureGrid[1][1] = -1;
-
-            figureGrid[2][0] = 0;
-            figureGrid[2][1] = 0;
-
-            figureGrid[3][0] = 1;
-            figureGrid[3][1] = 0;
-
-            color = Color.GREEN;
-            maxRotation = 1;
-            break;
-        case I_FIGURE:
-            figureGrid[0][0] = -2;
-            figureGrid[0][1] = 0;
-
-            figureGrid[1][0] = -1;
-            figureGrid[1][1] = 0;
-
-            figureGrid[2][0] = 0;
-            figureGrid[2][1] = 0;
-
-            figureGrid[3][0] = 1;
-            figureGrid[3][1] = 0;
-
-            color = Color.RED;
-            maxRotation = 1;
-            break;
-        case O_FIGURE:
-            figureGrid[0][0] = 1;
-            figureGrid[0][1] = 0;
-
-            figureGrid[1][0] = 0;
-            figureGrid[1][1] = 0;
-
-            figureGrid[2][0] = 0;
-            figureGrid[2][1] = 1;
-
-            figureGrid[3][0] = 1;
-            figureGrid[3][1] = 1;
-
-            color = Color.YELLOW;
-            maxRotation = 0;
-            break;
-        case L_FIGURE:
-            figureGrid[0][0] = -1;
-            figureGrid[0][1] = 0;
-
-            figureGrid[1][0] = 0;
-            figureGrid[1][1] = 0;
-
-            figureGrid[2][0] = 1;
-            figureGrid[2][1] = 0;
-
-            figureGrid[3][0] = 1;
-            figureGrid[3][1] = -1;
-
-            color = Color.ORANGE;
-            rotation = 2;
-            maxRotation = 3;
-            break;
-        case J_FIGURE:
-            figureGrid[0][0] = -1;
-            figureGrid[0][1] = -1;
-
-            figureGrid[1][0] = -1;
-            figureGrid[1][1] = 0;
-
-            figureGrid[2][0] = 0;
-            figureGrid[2][1] = 0;
-
-            figureGrid[3][0] = 1;
-            figureGrid[3][1] = 0;
-
-            color = Color.BLUE;
-            rotation = 2;
-            maxRotation = 3;
-            break;
-        case T_FIGURE:
-            figureGrid[0][0] = -1;
-            figureGrid[0][1] = 0;
-
-            figureGrid[1][0] = 0;
-            figureGrid[1][1] = 0;
-
-            figureGrid[2][0] = 1;
-            figureGrid[2][1] = 0;
-
-            figureGrid[3][0] = 0;
-            figureGrid[3][1] = -1;
-
-            color = Color.CYAN;
-            rotation = 2;
-            maxRotation = 3;
-            break;
-        }
+        figureType = fig;
+        rotation = figureType.initialRotation;
     }
 
     public Color getColor() {
-        return color;
+        return figureType.color;
     }
 
     private boolean belongsToFigure(int x, int y) {
@@ -199,7 +74,7 @@ public class Figure {
 
         paint(null);
         posX = newPosX;
-        paint(color);
+        paint(figureType.color);
 
         return true;
     }
@@ -218,7 +93,7 @@ public class Figure {
 
         paint(null);
         posY = newPosY;
-        paint(color);
+        paint(figureType.color);
 
         return true;
     }
@@ -226,13 +101,13 @@ public class Figure {
     private int relativeX(int rot, int sqr) {
         switch (rot % 4) {
         case 0:
-            return figureGrid[sqr][0];
+            return figureType.grid[sqr][0];
         case 1:
-            return figureGrid[sqr][1];
+            return figureType.grid[sqr][1];
         case 2:
-            return -figureGrid[sqr][0];
+            return -figureType.grid[sqr][0];
         case 3:
-            return -figureGrid[sqr][1];
+            return -figureType.grid[sqr][1];
         }
         return 0;
     }
@@ -240,20 +115,20 @@ public class Figure {
     private int relativeY(int rot, int sqr) {
         switch (rot % 4) {
         case 0:
-            return figureGrid[sqr][1];
+            return figureType.grid[sqr][1];
         case 1:
-            return -figureGrid[sqr][0];
+            return -figureType.grid[sqr][0];
         case 2:
-            return -figureGrid[sqr][1];
+            return -figureType.grid[sqr][1];
         case 3:
-            return figureGrid[sqr][0];
+            return figureType.grid[sqr][0];
         }
         return 0;
     }
 
     public void rotate() {
         int newRotation = rotation + 1;
-        if (newRotation > maxRotation) {
+        if (newRotation > figureType.maxRotation) {
             newRotation = 0;
         }
 
@@ -266,7 +141,7 @@ public class Figure {
 
         paint(null);
         rotation = newRotation;
-        paint(color);
+        paint(figureType.color);
     }
 
     public int getPosX() {
@@ -286,7 +161,7 @@ public class Figure {
     }
 
     public void paint() {
-        paint(color);
+        paint(figureType.color);
     }
 
     private void paint(Color c) {
