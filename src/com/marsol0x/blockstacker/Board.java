@@ -2,6 +2,7 @@ package com.marsol0x.blockstacker;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.util.Arrays;
 
 public class Board extends Object {
     private int width;
@@ -58,19 +59,19 @@ public class Board extends Object {
     }
 
     private void clearRow(int row) {
-        for (int i = 0; i < width; i++) {
-            grid[i][row] = null;
-        }
+        Arrays.fill(grid[row], null);
     }
 
     private void collapseRow(int row) {
-        if (row > height) {
-            return;
+        for (int y = row; y > 0; y--) {
+            grid[y] = grid[y - 1].clone();
+            for (int x = 0; x < getWidth(); x++) {
+                if (grid[y][x] != null) {
+                    grid[y][x].incrementPosition(0, 20.0);
+                }
+            }
         }
-        for (int i = 0; i < width; i++) {
-            grid[i][row] = grid[i][row + 1];
-            grid[i][row + 1] = null;
-        }
+        Arrays.fill(grid[0], null);
     }
 
     public void clearFullRows() {
@@ -78,6 +79,7 @@ public class Board extends Object {
             if (isRowFull(row)) {
                 clearRow(row);
                 collapseRow(row);
+                row++;
             }
         }
     }

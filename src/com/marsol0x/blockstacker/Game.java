@@ -87,12 +87,12 @@ class Game extends JPanel implements KeyListener, ActionListener {
             stillMoving = figure.moveDown();
             break;
         }
-        repaint();
 
         if (!stillMoving) {
             board.clearFullRows();
             newFigure();
         }
+        repaint();
     }
     @Override
     public void keyTyped(KeyEvent e) { }

@@ -32,6 +32,15 @@ public class Block {
         this.y = y;
     }
 
+    public Color getColor() {
+        return fillColor;
+    }
+
+    public void incrementPosition(double x, double y) {
+        this.x += x;
+        this.y += y;
+    }
+
     public void paintBlock(Graphics2D g) {
         Rectangle2D rect = new Rectangle2D.Double(x, y, 20, 20);
         BasicStroke stroke = new BasicStroke(2.0f, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER);
