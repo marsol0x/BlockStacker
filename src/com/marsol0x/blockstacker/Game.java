@@ -1,5 +1,6 @@
 package com.marsol0x.blockstacker;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -7,74 +8,104 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.Random;
 
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
+
 @SuppressWarnings("serial")
-public class Game extends JPanel implements ActionListener, KeyListener {
-    
+class Game extends JPanel implements KeyListener, ActionListener {
     private Board board;
+    private Figure figure;
+    private final FigureType[] availFigures = FigureType.values();
     private Timer timer;
-    
+    private Random rand = new Random();
+
     public Game() {
+        this(10, 20);
+    }
+
+    public Game(int width, int height) {
         super();
-        setPreferredSize(new Dimension(200, 400));
+        setPreferredSize(new Dimension(width * 20, height * 20));
+        setOpaque(true);
+        setBackground(Color.BLACK);
         setDoubleBuffered(true);
-        board = new Board();
-        
+
+        board = new Board(width, height);
+        newFigure();
+
         timer = new Timer(1000, this);
         timer.start();
     }
-    
+
     public void paint(Graphics g) {
         super.paint(g);
-
         Graphics2D g2 = (Graphics2D) g;
-        int width = board.getBoardWidth();
-        int height = board.getBoardHeight();
-        
-        for (int x = 0; x < width; x++) {
-            for (int y = 0; y < height; y++) {
-                Block b = board.getBlock(x, y);
-                if (b == null) {
-                    continue;
-                }
-                b.paint(g2, x * 20, y * 20);
-            }
-        }
+
+        board.render(g2);
     }
-    
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        board.moveControlled(Direction.DOWN);
-        repaint();
+
+    private void newFigure() {
+        int posY = 0;
+        int newFig = rand.nextInt(7);
+        if (newFig == 0 || newFig == 1) posY++;
+
+        figure = null;
+        figure = new Figure(availFigures[newFig], board, 4, posY);
+        if (!figure.canMove()) {
+            triggerGameOver();
+        }
+        figure.paint();
+    }
+
+    private void triggerGameOver() {
+        try {
+            wait();
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
-        Direction d = null;
+        boolean stillMoving = true;
+
         switch (e.getKeyCode()) {
+        case KeyEvent.VK_SPACE:
+            figure.rotate();
+            break;
         case KeyEvent.VK_LEFT:
-            d = Direction.LEFT;
+            stillMoving = figure.moveSide(0);
             break;
         case KeyEvent.VK_RIGHT:
-            d = Direction.RIGHT;
+            stillMoving = figure.moveSide(1);
             break;
         case KeyEvent.VK_DOWN:
-            d = Direction.DOWN;
+            stillMoving = figure.moveDown();
             break;
         }
-        board.moveControlled(d);
+
+        if (!stillMoving) {
+            board.clearFullRows();
+            newFigure();
+        }
         repaint();
-        System.out.println("keyPressed: " + e.getKeyCode());
     }
-
-    // Not using this
     @Override
-    public void keyTyped(KeyEvent e) {}
+    public void keyTyped(KeyEvent e) { }
 
-    // Not using this
     @Override
-    public void keyReleased(KeyEvent e) {}
+    public void keyReleased(KeyEvent e) { }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (!figure.moveDown()) {
+            board.clearFullRows();
+            newFigure();
+        }
+        repaint();
+    }
 }
