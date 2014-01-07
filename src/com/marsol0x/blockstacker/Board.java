@@ -47,15 +47,11 @@ public class Board extends Object {
     }
 
     private boolean isRowFull(int row) {
-        boolean rowFull = true;
         for (int i = 0; i < getWidth(); i++) {
-            if (grid[row][i] == null) {
-                rowFull = false;
-                break;
-            }
+            if (grid[row][i] == null) return false;
         }
 
-        return rowFull;
+        return true;
     }
 
     private void clearRow(int row) {

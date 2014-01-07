@@ -32,11 +32,7 @@ public class Figure {
     }
 
     private boolean canMove(int x, int y) {
-        if (board.isEmpty(x, y) || belongsToFigure(x, y)) {
-            return true;
-        }
-
-        return false;
+        return board.isEmpty(x, y) || belongsToFigure(x, y);
     }
 
     public boolean canMove() {
@@ -80,19 +76,15 @@ public class Figure {
     }
 
     public boolean moveDown() {
-        int newPosY = posY + 1;
-        int x, y;
-
         for (int sqr = 0; sqr < 4; sqr++) {
-            x = posX + relativeX(rotation, sqr);
-            y = newPosY + relativeY(rotation, sqr);
-            if (!canMove(x, y)) {
-                return false;
-            }
+            if (!canMove(
+                    posX + relativeX(rotation, sqr),
+                    posY + 1 + relativeY(rotation, sqr)
+                )) { return false; }
         }
 
         paint(null);
-        posY = newPosY;
+        posY++;
         paint(figureType.color);
 
         return true;
@@ -132,11 +124,11 @@ public class Figure {
             newRotation = 0;
         }
 
-        int x, y;
         for (int i = 0; i < 4; i++) {
-            x = posX + relativeX(newRotation, i);
-            y = posY + relativeY(newRotation, i);
-            if (!canMove(x, y)) return;
+            if(!canMove(
+                    posX + relativeX(newRotation, i),
+                    posY + relativeY(newRotation, i)
+            )) { return; }
         }
 
         paint(null);
@@ -164,12 +156,13 @@ public class Figure {
         paint(figureType.color);
     }
 
-    private void paint(Color c) {
-        int x, y;
+    private void paint(Color color) {
         for (int i = 0; i < 4; i++) {
-            x = posX + relativeX(rotation, i);
-            y = posY + relativeY(rotation, i);
-            board.setColor(c, x, y);
+            board.setColor(
+                    color,
+                    posX + relativeX(rotation, i),
+                    posY + relativeY(rotation, i)
+            );
         }
     }
 }

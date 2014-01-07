@@ -43,7 +43,6 @@ class Game extends JPanel implements KeyListener, ActionListener {
     public void paint(Graphics g) {
         super.paint(g);
         Graphics2D g2 = (Graphics2D) g;
-
         board.render(g2);
     }
 
@@ -54,9 +53,8 @@ class Game extends JPanel implements KeyListener, ActionListener {
 
         figure = null;
         figure = new Figure(availFigures[newFig], board, 4, posY);
-        if (!figure.canMove()) {
-            triggerGameOver();
-        }
+        if (!figure.canMove()) triggerGameOver();
+
         figure.paint();
     }
 
