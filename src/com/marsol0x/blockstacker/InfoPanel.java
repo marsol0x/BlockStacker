@@ -32,7 +32,7 @@ public class InfoPanel extends JPanel implements ScoreStateUser {
         add(rowsTitleLabel);
         add(rowsLabel);
         
-        ScoreState.getScoreStateInstance().addRegUpdate(this);
+        ScoreState.addRegUpdate(this);
     }
     
     // ScoreStateUser interface implementation

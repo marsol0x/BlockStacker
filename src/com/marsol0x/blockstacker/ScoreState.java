@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class ScoreState {
     private static ScoreState instance = null;
-    private ArrayList<ScoreStateUser> regUpdate = new ArrayList<ScoreStateUser>();
+    private static ArrayList<ScoreStateUser> regUpdate = new ArrayList<ScoreStateUser>();
     
     private long score;
     private long rows;
@@ -18,6 +18,7 @@ public class ScoreState {
     
     public static void resetScoreState() {
         instance = null;
+        updateRegistered();
     }
     
     private ScoreState() {
@@ -43,11 +44,11 @@ public class ScoreState {
         return rows;
     }
     
-    public void addRegUpdate(ScoreStateUser panel) {
+    public static void addRegUpdate(ScoreStateUser panel) {
         regUpdate.add(panel);
     }
     
-    private void updateRegistered() {
+    private static void updateRegistered() {
         for (ScoreStateUser p : regUpdate) {
             p.updateScore();
         }
