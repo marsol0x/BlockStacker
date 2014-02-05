@@ -146,7 +146,7 @@ public class Figure {
     public void setPosY(int posY) {
         this.posY = posY;
     }
-
+    
     public void paint() {
         paint(figureType.color);
     }

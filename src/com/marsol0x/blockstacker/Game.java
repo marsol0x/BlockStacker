@@ -10,6 +10,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.Random;
 
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
@@ -18,6 +19,7 @@ import javax.swing.Timer;
 class Game extends JPanel implements KeyListener, ActionListener {
     private Board board;
     private Figure figure;
+    private boolean running;
     private final FigureType[] availFigures = FigureType.values();
     private Timer timer;
     private Random rand = new Random();
@@ -38,8 +40,10 @@ class Game extends JPanel implements KeyListener, ActionListener {
 
         timer = new Timer(1000, this);
         timer.start();
+        running = true;
     }
 
+    @Override
     public void paint(Graphics g) {
         super.paint(g);
         Graphics2D g2 = (Graphics2D) g;
@@ -50,26 +54,48 @@ class Game extends JPanel implements KeyListener, ActionListener {
         int posY = 0;
         int newFig = rand.nextInt(7);
         if (newFig == 0 || newFig == 1) posY++;
+        
+        // check for game over state
+        // if the x positions of 2, 3, 4, & 5 are filled on y position posY
+        // then game over
+        if (!(board.isEmpty(2, posY)
+            && board.isEmpty(3, posY)
+            && board.isEmpty(4, posY)
+            && board.isEmpty(4, posY))) {
+            triggerGameOver();
+        }
 
         figure = null;
         figure = new Figure(availFigures[newFig], board, 4, posY);
-        if (!figure.canMove()) triggerGameOver();
-
         figure.paint();
     }
 
     private void triggerGameOver() {
-        try {
-            wait();
-        } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        running = false;
+        timer.stop();
+        
+        int new_game = JOptionPane.showConfirmDialog(this,
+                "Play Again?",
+                "Game Over",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.PLAIN_MESSAGE);
+        
+        if (new_game == JOptionPane.YES_OPTION) {
+            System.out.println();
+            ScoreState.resetScoreState();
+            board.clearBoard();
+            timer.start();
+            running = true;
+        } else {
+            System.exit(0);
         }
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
         boolean stillMoving = true;
+        
+        if (!running) return;
 
         switch (e.getKeyCode()) {
         case KeyEvent.VK_SPACE:

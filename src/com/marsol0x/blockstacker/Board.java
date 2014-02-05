@@ -110,5 +110,11 @@ public class Board extends Object {
                 }
             }
         }
+        
+    }
+
+    public void clearBoard() {
+        grid = null;
+        grid = new Block[height][width];
     }
 }
