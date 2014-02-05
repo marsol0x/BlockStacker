@@ -22,6 +22,25 @@ public class Board extends Object {
     public int getHeight() {
         return height;
     }
+    
+    private void updateScore(long totalRows) {
+        if (totalRows <= 0) return;
+
+        long score;
+        ScoreState state = ScoreState.getScoreStateInstance();
+        state.addRows(totalRows);
+        
+        if (totalRows == 1) {
+            score = 100L;
+        } else if (totalRows == 2) {
+            score = 300L;
+        } else if (totalRows == 3) {
+            score = 500L;
+        } else {
+            score = 300L * totalRows;
+        }
+        state.addScore(score);
+    }
 
     public boolean isEmpty(int x, int y) {
         if (!(x >= 0 && x < getWidth())) {
@@ -71,13 +90,16 @@ public class Board extends Object {
     }
 
     public void clearFullRows() {
+        long totalRows = 0;
         for (int row = getHeight() - 1; row >= 0; row--) {
             if (isRowFull(row)) {
                 clearRow(row);
                 collapseRow(row);
                 row++;
+                totalRows++;
             }
         }
+        updateScore(totalRows);
     }
 
     public void render(Graphics2D g2) {
