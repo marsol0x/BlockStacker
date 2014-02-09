@@ -23,6 +23,7 @@ class Game extends JPanel implements KeyListener, ActionListener {
     private final FigureType[] availFigures = FigureType.values();
     private Timer timer;
     private Random rand = new Random();
+    private ScoreState state;
 
     public Game() {
         this(10, 20);
@@ -41,6 +42,9 @@ class Game extends JPanel implements KeyListener, ActionListener {
         timer = new Timer(1000, this);
         timer.start();
         running = true;
+        
+        state = ScoreState.getScoreStateInstance();
+        state.setRunning(running);
     }
 
     @Override
@@ -94,21 +98,28 @@ class Game extends JPanel implements KeyListener, ActionListener {
     @Override
     public void keyPressed(KeyEvent e) {
         boolean stillMoving = true;
-        
-        if (!running) return;
 
         switch (e.getKeyCode()) {
         case KeyEvent.VK_SPACE:
-            figure.rotate();
+            if (running) figure.rotate();
             break;
         case KeyEvent.VK_LEFT:
-            stillMoving = figure.moveSide(0);
+            if (running) stillMoving = figure.moveSide(0);
             break;
         case KeyEvent.VK_RIGHT:
-            stillMoving = figure.moveSide(1);
+            if (running) stillMoving = figure.moveSide(1);
             break;
         case KeyEvent.VK_DOWN:
-            stillMoving = figure.moveDown();
+            if (running) stillMoving = figure.moveDown();
+            break;
+        case KeyEvent.VK_ENTER:
+            running = !running;
+            state.setRunning(running);
+            if (running) {
+                timer.start();
+            } else {
+                timer.stop();
+            }
             break;
         }
 
