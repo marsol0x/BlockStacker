@@ -14,6 +14,7 @@ public class InfoPanel extends JPanel implements ScoreStateUser {
     private JLabel rowsTitleLabel = new JLabel("Rows");
     private JLabel scoreLabel = new JLabel("0");
     private JLabel rowsLabel = new JLabel("0");
+    private JLabel pausedLabel = new JLabel("\n");
 
     public InfoPanel() {
         super();
@@ -25,12 +26,16 @@ public class InfoPanel extends JPanel implements ScoreStateUser {
         scoreLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         rowsTitleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         rowsLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        pausedLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        
         add(Box.createVerticalStrut(10));
         add(scoreTitleLabel);
         add(scoreLabel);
         add(Box.createVerticalStrut(10));
         add(rowsTitleLabel);
         add(rowsLabel);
+        add(Box.createVerticalStrut(10));
+        add(pausedLabel);
         
         ScoreState.addRegUpdate(this);
     }
@@ -40,5 +45,11 @@ public class InfoPanel extends JPanel implements ScoreStateUser {
         ScoreState state = ScoreState.getScoreStateInstance();
         scoreLabel.setText(String.valueOf(state.getScore()));
         rowsLabel.setText(String.valueOf(state.getRows()));
+        
+        if (state.isRunning()) {
+            pausedLabel.setText("\n");
+        } else {
+            pausedLabel.setText("Paused");
+        }
     }
 }

@@ -8,6 +8,7 @@ public class ScoreState {
     
     private long score;
     private long rows;
+    private boolean running;
 
     public static ScoreState getScoreStateInstance() {
         if (instance == null) {
@@ -42,6 +43,15 @@ public class ScoreState {
 
     public long getRows() {
         return rows;
+    }
+    
+    public void setRunning(boolean running) {
+        this.running = running;
+        updateRegistered();
+    }
+    
+    public boolean isRunning() {
+        return running;
     }
     
     public static void addRegUpdate(ScoreStateUser panel) {
